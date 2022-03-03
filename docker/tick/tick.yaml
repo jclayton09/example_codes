@@ -1,0 +1,52 @@
+version: '3.7'
+
+networks:
+    tig-net: ## Need all services on the same network to interact
+        driver: bridge
+
+services:
+    telegraf:
+        image: telegraf:latest
+        depends_on:
+            - "influxdb"
+        environment:
+            HOST_NAME: "telegraf"
+            INFLUXDB_HOST: "influxdb"
+            INFLUXDB_PORT: "8086"
+            DATABASE: "telegraf"
+        volumes:
+            - ./telegraf.conf:/etc/telegraf/telegraf.conf
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        tty: true
+        networks:
+            - tig-net
+        privileged: true
+
+    influxdb:
+        image: influxdb:1.8.10
+        ports:
+            - 8086:8086
+#        environment:
+#            INFLUXDB_HTTP_AUTH_ENABLED: "true"
+#            INFLUXDB_DB: "iot"
+#            INFLUXDB_ADMIN_USER: "iotlnu"
+#            INFLUXDB_ADMIN_PASSWORD: "micropython"
+        networks:
+            - tig-net
+        volumes:
+            - C:\Users\Josh\docker_data\tick\influxdb:/var/lib/influxdb
+
+    chronograf:
+      image: chronograf:latest
+      ports:
+      - 8888:8888
+      networks:
+        - tig-net
+      command: ["chronograf", "--influxdb-url=http://influxdb:8086"]
+
+    kapacitor:
+      image: kapacitor:latest
+      networks:
+        - tig-net
+      environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086

@@ -1,0 +1,9 @@
+task_id,task_type,task,progress,date_created
+0,Ess,Clean,0,"August 06, 2021"
+1,Ess,Wash,1,"August 06, 2021"
+3,BT,sort wire,0,"August 06, 2021"
+4,NTH,ring tc,1,"August 06, 2021"
+5,Ess,code sensor,0,"August 07, 2021"
+6,Ess,raise prf,0,"August 07, 2021"
+8,NTH,test code,1,"August 07, 2021"
+9,NTH,sort fittings,0,"August 07, 2021"

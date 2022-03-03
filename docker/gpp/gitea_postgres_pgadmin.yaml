@@ -1,0 +1,49 @@
+version: "3.7"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  gitea:
+    image: gitea/gitea:1.16.0
+    environment:
+     - USER_UID=1000
+     - USER_GID=1000
+     - GITEA__database__DB_TYPE=postgres
+     - GITEA__database__HOST=db:5432
+     - GITEA__database__NAME=gitea
+     - GITEA__database__USER=gitea
+     - GITEA__database__PASSWD=gitea
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - C:\Users\Josh\docker_data\gpp\gitea:\data
+      - C:\Users\Josh\docker_data\gpp\gitea\timezone:\etc\timezone:ro
+      - C:\Users\Josh\docker_data\gpp\gitea\localtime:\etc\localtime:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgresdbdb
+
+  postgresdb:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    networks:
+      - gitea
+    volumes:
+      - C:\Users\Josh\docker_data\gpp\postgres:\var\lib\postgresql\data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
